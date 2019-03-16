@@ -1,9 +1,11 @@
 const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
+const cors = require('cors');
 
 const app = express();
 
+app.use(cors());
 app.use(bodyParser.json());
 
 const database = {
@@ -12,6 +14,7 @@ const database = {
             id: '123',
             name: 'john',
             email: 'johndoe@gmail.com',
+            password: 'bananas',
             entries: 0,
             joined: new Date()
         },
@@ -19,6 +22,7 @@ const database = {
             id: '456',
             name: 'jane',
             email: 'janedoe@gmail.com',
+            password: 'kiwis',
             entries: 0,
             joined: new Date()
         }
@@ -102,6 +106,6 @@ bcrypt.compare("veggies", hash, function(err, res) {
     // res = false
 }); */
 
-app.listen(3000, () => {
-    console.log('App is running on port 3000!');
+app.listen(3001, () => {
+    console.log('App is running on port 3001!');
 })
