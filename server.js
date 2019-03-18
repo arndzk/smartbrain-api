@@ -18,8 +18,8 @@ const db = knex({
     client: 'pg',
     connection: {
         host: 'localhost',
-        user: 'postgres',
-        password: 'milliondollars',
+        user: '',
+        password: '',
         database: 'smartbrain'
     }
 });
@@ -29,7 +29,7 @@ app.get('/', (req, res) => {
 });
 
 app.post('/signin', signin.handleSignin(db, bcrypt))
-app.post('/register', (req, res) => { register.handleRegister(req, res, db, bcrypt) })
+app.post('/register', register.handleRegisterdb, bcrypt))
 app.get('/profile/:id', (req, res) => {profile.handleProfileGet(req, res, db)})
 app.put('/image', (req, res) => { image.handleImage(req, res, db) })
 
