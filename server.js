@@ -2,13 +2,28 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const bcrypt = require('bcrypt-nodejs');
 const cors = require('cors');
+const knex = require('knex');
+
+const db = knex({
+    client: 'pg',
+    connection: {
+        host: 'localhost',
+        user: '',
+        password: '',
+        database: 'smartbrain'
+    }
+});
+
+db.select('*').from('users').then(data => {
+    console.log(data);
+});
 
 const app = express();
 
 app.use(cors());
 app.use(bodyParser.json());
 
-const database = {
+/* const database = {
     users: [
         {
             id: '123',
@@ -34,7 +49,7 @@ const database = {
             email: 'johndoe@gmail.com'
         }
     ]
-}
+} */
 
 app.get('/', (req, res) => {
     res.send(database.users);
@@ -52,16 +67,18 @@ app.post('/signin', (req, res) => {
 app.post('/register', (req, res) => {
     const { email, name, password } = req.body;
     bcrypt.hash(password, null, null, function(err, hash) {
-        console.log(hash);
+        console.log('Password Encrypted!');
     });
-    database.users.push({
-        id: '789',
-        name: name,
-        email: email,
-        entries: 0,
-        joined: new Date()
+    db('users')
+        .returning('*')
+        .insert({
+            email: email,
+            name: name,
+            joined: new Date()
+    }).then(user => {
+        res.json(user[0]);
     })
-    res.json(database.users[database.users.length - 1]);
+    .catch(err => res.status(400).json('Unable to Register!'))
 })
 
 app.get('/profile/:id', (req, res) => {
